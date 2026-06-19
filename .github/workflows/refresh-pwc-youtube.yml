@@ -1,0 +1,39 @@
+name: Refresh PwC YouTube sources
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "30 8 * * MON"
+
+permissions:
+  contents: write
+
+jobs:
+  refresh-youtube:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Ingest PwC YouTube metadata
+        env:
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+          MAX_YOUTUBE_VIDEOS: 50
+        run: node scripts/crawl-youtube.mjs
+
+      - name: Commit YouTube source outputs
+        run: |
+          if [ -n "$(git status --porcelain crawler/youtube)" ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add crawler/youtube
+            git commit -m "Refresh PwC YouTube source candidates"
+            git push
+          else
+            echo "No YouTube source refresh changes to commit."
+          fi
