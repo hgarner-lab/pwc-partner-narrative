@@ -1,0 +1,20 @@
+{
+  "channels": [
+    {
+      "id": "pwc-global",
+      "label": "PwC Global",
+      "handle": "PwC",
+      "url": "https://www.youtube.com/@PwC/videos",
+      "region": "Global",
+      "enabled": true
+    },
+    {
+      "id": "pwc-uk",
+      "label": "PwC UK",
+      "handle": "PwCUK",
+      "url": "https://www.youtube.com/@PwCUK/videos",
+      "region": "UK",
+      "enabled": true
+    }
+  ]
+}
