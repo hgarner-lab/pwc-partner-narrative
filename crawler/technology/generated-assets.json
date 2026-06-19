@@ -1,0 +1,13 @@
+{
+  "generatedAt": "2026-06-19T15:04:11.356Z",
+  "seedUrls": [
+    "https://www.pwc.com/gx/en/issues/technology.html"
+  ],
+  "scope": {
+    "host": "www.pwc.com",
+    "allowedPath": "/gx/en/issues/technology.html and /gx/en/issues/technology/*",
+    "maxPages": 80,
+    "maxDepth": 4
+  },
+  "assets": []
+}
