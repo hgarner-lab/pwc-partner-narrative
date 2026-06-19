@@ -11,8 +11,13 @@ const ROOT_REPORT_PATH = new URL("../crawl-report.json", import.meta.url);
 const DEFAULT_START_URL = "https://www.pwc.com/gx/en/issues/technology.html";
 const DEFAULT_MAX_PAGES = Number.parseInt(process.env.MAX_PAGES || "80", 10);
 const DEFAULT_MAX_DEPTH = Number.parseInt(process.env.MAX_DEPTH || "4", 10);
-const REQUEST_DELAY_MS = Number.parseInt(process.env.REQUEST_DELAY_MS || "250", 10);
+const REQUEST_DELAY_MS = Number.parseInt(process.env.REQUEST_DELAY_MS || "500", 10);
+const FETCH_MODE = process.env.FETCH_MODE || "auto";
 const now = new Date().toISOString();
+
+let browserModulePromise = null;
+let browserPromise = null;
+let browserContextPromise = null;
 
 function delay(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -319,7 +324,7 @@ function readingMinutes(text) {
   return Math.max(1, Math.round(words / 220));
 }
 
-function htmlAsset({ finalUrl, html, contentType, depth, parentUrl, linkLabel }) {
+function htmlAsset({ finalUrl, html, contentType, depth, parentUrl, linkLabel, fetchMode }) {
   const cleanText = extractCleanText(html);
   const title = extractTitle(html, finalUrl);
   const description = extractMeta(html, ["description", "og:description", "twitter:description"]);
@@ -334,6 +339,7 @@ function htmlAsset({ finalUrl, html, contentType, depth, parentUrl, linkLabel })
     parent_url: parentUrl || null,
     link_label: linkLabel || null,
     crawl_depth: depth,
+    fetch_mode: fetchMode,
     source_group: "pwc-technology-hub",
     source_type: "PwC technology content",
     platform: new URL(finalUrl).hostname.replace(/^www\./, ""),
@@ -363,7 +369,7 @@ function htmlAsset({ finalUrl, html, contentType, depth, parentUrl, linkLabel })
   };
 }
 
-function pdfAsset({ finalUrl, contentType, status, depth, parentUrl, linkLabel }) {
+function pdfAsset({ finalUrl, contentType, status, depth, parentUrl, linkLabel, fetchMode }) {
   const title = titleFromUrl(finalUrl);
   return {
     id: `pwc-tech-${hash(finalUrl)}`,
@@ -373,6 +379,7 @@ function pdfAsset({ finalUrl, contentType, status, depth, parentUrl, linkLabel }
     parent_url: parentUrl || null,
     link_label: linkLabel || null,
     crawl_depth: depth,
+    fetch_mode: fetchMode,
     source_group: "pwc-technology-hub",
     source_type: "PwC technology content",
     platform: new URL(finalUrl).hostname.replace(/^www\./, ""),
@@ -402,7 +409,7 @@ function pdfAsset({ finalUrl, contentType, status, depth, parentUrl, linkLabel }
   };
 }
 
-async function fetchSource(url) {
+async function nodeFetchSource(url) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), 25000);
   try {
@@ -410,19 +417,96 @@ async function fetchSource(url) {
       signal: controller.signal,
       redirect: "follow",
       headers: {
-        "user-agent": "PwC Partner Narrative Kits technology crawler (+approved public PwC sources)",
-        accept: "text/html,application/xhtml+xml,application/pdf;q=0.9,*/*;q=0.8",
+        "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0 Safari/537.36",
+        accept: "text/html,application/xhtml+xml,application/xml;q=0.9,application/pdf;q=0.8,*/*;q=0.7",
+        "accept-language": "en-GB,en;q=0.9",
+        "cache-control": "no-cache",
       },
     });
     const body = Buffer.from(await response.arrayBuffer());
     return {
-      response,
+      response: { status: response.status, ok: response.ok, statusText: response.statusText },
       finalUrl: stripHash(response.url || url),
       contentType: response.headers.get("content-type") || "",
       body,
+      fetchMode: "node",
     };
   } finally {
     clearTimeout(timer);
+  }
+}
+
+async function playwrightModule() {
+  browserModulePromise ||= import("playwright");
+  return browserModulePromise;
+}
+
+async function browserContext() {
+  if (!browserPromise) {
+    const { chromium } = await playwrightModule();
+    browserPromise = chromium.launch({ headless: true });
+  }
+  if (!browserContextPromise) {
+    const browser = await browserPromise;
+    browserContextPromise = browser.newContext({
+      viewport: { width: 1440, height: 1400 },
+      locale: "en-GB",
+      timezoneId: "Europe/London",
+      userAgent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0 Safari/537.36",
+      extraHTTPHeaders: {
+        "accept-language": "en-GB,en;q=0.9",
+        "upgrade-insecure-requests": "1",
+      },
+    });
+  }
+  return browserContextPromise;
+}
+
+async function browserFetchSource(url) {
+  if (isPdfLike(url)) return nodeFetchSource(url);
+  const context = await browserContext();
+  const page = await context.newPage();
+  try {
+    await page.addInitScript(() => {
+      Object.defineProperty(navigator, "webdriver", { get: () => false });
+    });
+    const response = await page.goto(url, { waitUntil: "domcontentloaded", timeout: 45000 });
+    await page.waitForLoadState("networkidle", { timeout: 8000 }).catch(() => undefined);
+    const status = response?.status() || 0;
+    const headers = response?.headers() || {};
+    const html = await page.content();
+    return {
+      response: { status, ok: status >= 200 && status < 400, statusText: response?.statusText() || "" },
+      finalUrl: stripHash(page.url() || url),
+      contentType: headers["content-type"] || "text/html",
+      body: Buffer.from(html, "utf8"),
+      fetchMode: "browser",
+    };
+  } finally {
+    await page.close().catch(() => undefined);
+  }
+}
+
+async function fetchSource(url) {
+  if (FETCH_MODE === "node") return nodeFetchSource(url);
+  if (FETCH_MODE === "browser") return browserFetchSource(url);
+  try {
+    const browserResult = await browserFetchSource(url);
+    if (browserResult.response.ok || browserResult.response.status !== 403) return browserResult;
+  } catch (error) {
+    if (!/Cannot find package|playwright/i.test(error.message)) throw error;
+  }
+  return nodeFetchSource(url);
+}
+
+async function closeBrowser() {
+  if (browserContextPromise) {
+    const context = await browserContextPromise;
+    await context.close().catch(() => undefined);
+  }
+  if (browserPromise) {
+    const browser = await browserPromise;
+    await browser.close().catch(() => undefined);
   }
 }
 
@@ -450,48 +534,54 @@ async function crawl() {
   const assets = [];
   const linkGraph = [];
   const errors = [];
+  const fetchModes = {};
   let fetchedPageCount = 0;
   let pdfCount = 0;
 
-  while (queue.length && assets.length < DEFAULT_MAX_PAGES) {
-    const next = queue.shift();
-    if (!next?.url || seen.has(next.url) || next.depth > DEFAULT_MAX_DEPTH) continue;
-    seen.add(next.url);
+  try {
+    while (queue.length && assets.length < DEFAULT_MAX_PAGES) {
+      const next = queue.shift();
+      if (!next?.url || seen.has(next.url) || next.depth > DEFAULT_MAX_DEPTH) continue;
+      seen.add(next.url);
 
-    try {
-      const fetched = await fetchSource(next.url);
-      const status = fetched.response.status;
-      if (!fetched.response.ok) {
-        errors.push({ url: next.url, status, message: fetched.response.statusText });
-        continue;
-      }
-
-      if (isPdfLike(fetched.finalUrl, fetched.contentType)) {
-        pdfCount += 1;
-        assets.push(pdfAsset({ ...next, finalUrl: fetched.finalUrl, contentType: fetched.contentType, status }));
-        continue;
-      }
-
-      if (!isHtmlLike(fetched.finalUrl, fetched.contentType)) continue;
-
-      const html = fetched.body.toString("utf8");
-      const asset = htmlAsset({ ...next, finalUrl: fetched.finalUrl, html, contentType: fetched.contentType });
-      assets.push(asset);
-      fetchedPageCount += 1;
-
-      const discoveredLinks = extractLinks(html, fetched.finalUrl);
-      for (const link of discoveredLinks) {
-        const relation = inTechnologyScope(link.url) ? "in_scope" : "related_offscope";
-        linkGraph.push({ from: fetched.finalUrl, to: link.url, label: link.label, relation });
-        if (relation === "in_scope" && shouldCrawl(link.url) && !seen.has(link.url) && next.depth < DEFAULT_MAX_DEPTH) {
-          queue.push({ url: stripHash(link.url), depth: next.depth + 1, parentUrl: fetched.finalUrl, linkLabel: link.label });
+      try {
+        const fetched = await fetchSource(next.url);
+        const status = fetched.response.status;
+        fetchModes[fetched.fetchMode] = (fetchModes[fetched.fetchMode] || 0) + 1;
+        if (!fetched.response.ok) {
+          errors.push({ url: next.url, status, message: fetched.response.statusText, fetchMode: fetched.fetchMode });
+          continue;
         }
-      }
 
-      await delay(REQUEST_DELAY_MS);
-    } catch (error) {
-      errors.push({ url: next.url, message: error.message });
+        if (isPdfLike(fetched.finalUrl, fetched.contentType)) {
+          pdfCount += 1;
+          assets.push(pdfAsset({ ...next, finalUrl: fetched.finalUrl, contentType: fetched.contentType, status, fetchMode: fetched.fetchMode }));
+          continue;
+        }
+
+        if (!isHtmlLike(fetched.finalUrl, fetched.contentType)) continue;
+
+        const html = fetched.body.toString("utf8");
+        const asset = htmlAsset({ ...next, finalUrl: fetched.finalUrl, html, contentType: fetched.contentType, fetchMode: fetched.fetchMode });
+        assets.push(asset);
+        fetchedPageCount += 1;
+
+        const discoveredLinks = extractLinks(html, fetched.finalUrl);
+        for (const link of discoveredLinks) {
+          const relation = inTechnologyScope(link.url) ? "in_scope" : "related_offscope";
+          linkGraph.push({ from: fetched.finalUrl, to: link.url, label: link.label, relation });
+          if (relation === "in_scope" && shouldCrawl(link.url) && !seen.has(link.url) && next.depth < DEFAULT_MAX_DEPTH) {
+            queue.push({ url: stripHash(link.url), depth: next.depth + 1, parentUrl: fetched.finalUrl, linkLabel: link.label });
+          }
+        }
+
+        await delay(REQUEST_DELAY_MS);
+      } catch (error) {
+        errors.push({ url: next.url, message: error.message, fetchMode: FETCH_MODE });
+      }
     }
+  } finally {
+    await closeBrowser();
   }
 
   const generated = {
@@ -502,6 +592,7 @@ async function crawl() {
       allowedPath: "/gx/en/issues/technology.html and /gx/en/issues/technology/*",
       maxPages: DEFAULT_MAX_PAGES,
       maxDepth: DEFAULT_MAX_DEPTH,
+      fetchMode: FETCH_MODE,
     },
     assets,
   };
@@ -522,8 +613,11 @@ async function crawl() {
     newCandidateCount: assets.length,
     maxDepth: DEFAULT_MAX_DEPTH,
     maxPages: DEFAULT_MAX_PAGES,
+    fetchMode: FETCH_MODE,
+    fetchModes,
     notes: [
       "Crawler is scoped to the PwC AI, data and tech hub and child URLs under /gx/en/issues/technology/.",
+      "Workflow can run with FETCH_MODE=browser to render pages with Playwright when plain Node fetch is blocked.",
       "Navigation, footer, search, social, video-control and legal boilerplate are stripped before proof extraction.",
       "Generated assets are candidates for marketing review, not auto-approved partner kit sources.",
       "PDFs are recorded and checked for availability, but PDF text extraction is pending.",
