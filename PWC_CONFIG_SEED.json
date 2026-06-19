@@ -1,0 +1,55 @@
+{
+  "client": {
+    "name": "PwC",
+    "product_name": "PwC Content Atlas",
+    "product_framing": "Find useful PwC content and turn it into marketing or BD activation.",
+    "primary_users": ["Marketing", "Sales / Business Development"]
+  },
+  "brand": {
+    "note": "Use approved PwC brand assets if supplied. Otherwise use a text-based placeholder lockup.",
+    "accent_palette_suggestion": ["warm red", "orange", "amber", "deep ink", "off-white"]
+  },
+  "topics_seed": [
+    "AI and responsible AI",
+    "Cybersecurity",
+    "Digital transformation",
+    "Cloud transformation",
+    "Data and analytics",
+    "Risk and regulation",
+    "Trust and resilience",
+    "Tax",
+    "Deals / M&A",
+    "Sustainability / ESG",
+    "Financial services",
+    "Consumer markets",
+    "Industrial products",
+    "Workforce transformation",
+    "Finance transformation",
+    "Supply chain"
+  ],
+  "funnel_stages": [
+    "Thought leadership",
+    "Education",
+    "Proof",
+    "Consideration",
+    "Sales enablement",
+    "Executive POV",
+    "Background"
+  ],
+  "content_quality_rubric": [
+    "Bold enough to post?",
+    "Strong enough to prove?",
+    "Likely to get people talking?",
+    "Useful for campaign planning?",
+    "Useful enough for BD?"
+  ],
+  "activation_labels": [
+    "Campaign-ready",
+    "Strong proof point",
+    "Conversation starter",
+    "BD-ready",
+    "Needs sharper POV",
+    "Needs stronger proof",
+    "Background only"
+  ]
+}
