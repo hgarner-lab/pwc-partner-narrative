@@ -1,0 +1,19 @@
+.pwc-mark {
+  width: 126px;
+  height: 64px;
+  background: url("./assets/pwc-logo.png") left center / contain no-repeat transparent !important;
+  padding: 0 !important;
+  align-items: center !important;
+}
+
+.pwc-mark .pwc-text,
+.pwc-mark .block {
+  display: none !important;
+}
+
+@media (max-width: 760px) {
+  .pwc-mark {
+    width: 104px;
+    height: 54px;
+  }
+}
