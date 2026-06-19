@@ -6,7 +6,7 @@ const tdaiNarratives = {
     tension: "Innovation is moving faster than many organisations can adapt, adopt and scale responsibly.",
     whyNow: "AI is opening new routes to reinvention and growth, but results depend on the data, cloud foundations and operating choices around it.",
     belief: "PwC helps leaders convert AI, data and technology into practical momentum: clearer choices, stronger foundations and responsible scale.",
-    sectorCuts: "Financial Services, TMT, UK market",
+    sectorCuts: "Financial Services, Tech, media & telecoms, UK market",
     roleCuts: "CEO, CIO / CTO, CFO, CHRO",
     moments: "Setting strategy, Scaling responsibly, Building momentum",
     claimsToAvoid: [
@@ -22,7 +22,7 @@ const tdaiNarratives = {
     tension: "Leaders want speed, but unmanaged speed creates questions about accountability, controls and confidence.",
     whyNow: "As AI moves into core work, leaders need practical guardrails that support adoption rather than sitting outside it.",
     belief: "PwC can help make responsible scale operational through governance, assurance, controls and clearer decision rights.",
-    sectorCuts: "Financial Services, TMT, Energy",
+    sectorCuts: "Financial Services, Tech, media & telecoms, Energy",
     roleCuts: "Risk leader, CIO / CTO, CEO, CFO",
     moments: "Scaling responsibly, Delivery confidence, Market trigger",
     claimsToAvoid: [
@@ -38,7 +38,7 @@ const tdaiNarratives = {
     tension: "Many teams want the AI use case before they have the infrastructure, data quality or ownership to scale it.",
     whyNow: "AI is becoming embedded in how work gets done, which makes reusable foundations more valuable than isolated pilots.",
     belief: "PwC helps leaders connect AI ambition to the technical and organisational foundations needed for repeatable value.",
-    sectorCuts: "Financial Services, Healthcare, Consumer Markets, TMT",
+    sectorCuts: "Financial Services, Healthcare, Consumer Markets, Tech, media & telecoms",
     roleCuts: "CIO / CTO, Transformation leader, Risk leader, CEO",
     moments: "Setting strategy, Platform decisions, Delivery confidence",
     claimsToAvoid: [
@@ -54,7 +54,7 @@ const tdaiNarratives = {
     tension: "AI can make teams faster, but speed without redesigned roles, skills and judgement creates shallow gains.",
     whyNow: "Executives are asking how AI changes skills, entry roles, leadership habits and workforce value creation.",
     belief: "PwC can help leaders redesign the human system around AI so productivity becomes sustainable and trusted.",
-    sectorCuts: "Financial Services, TMT, Consumer Markets",
+    sectorCuts: "Financial Services, Tech, media & telecoms, Consumer Markets",
     roleCuts: "CHRO, CEO, CFO, CIO / CTO",
     moments: "Workforce redesign, Exploring opportunities, Event follow-up",
     claimsToAvoid: [
@@ -80,17 +80,17 @@ const tdaiNarratives = {
     ]
   },
   "tmt-ai": {
-    name: "Industry momentum: TMT",
-    summary: "TMT is building AI and being reshaped by it; the scarce layer is judgement about where value moves next.",
-    coreTruth: "In TMT, AI is close to the operating model; judgement is the scarce layer.",
+    name: "Industry momentum: Tech, media & telecoms",
+    summary: "Technology, media and telecoms companies are building AI and being reshaped by it; the scarce layer is judgement about where value moves next.",
+    coreTruth: "In technology, media and telecoms, AI is close to the operating model; judgement is the scarce layer.",
     tension: "The sector may be closest to AI creation, but it still needs clear choices on growth, trust, platforms and skills.",
-    whyNow: "TMT leaders are facing platform shifts, skills change and new expectations for AI-enabled value.",
-    belief: "PwC can help TMT leaders turn AI intensity into clearer choices and trusted growth.",
-    sectorCuts: "TMT",
+    whyNow: "Technology, media and telecoms leaders are facing platform shifts, skills change and new expectations for AI-enabled value.",
+    belief: "PwC can help technology, media and telecoms leaders turn AI intensity into clearer choices and trusted growth.",
+    sectorCuts: "Tech, media & telecoms",
     roleCuts: "CEO, CIO / CTO, CHRO, CMO",
     moments: "Exploring opportunities, Platform decisions, Market trigger",
     claimsToAvoid: [
-      "Do not treat TMT as one uniform market.",
+      "Do not treat technology, media and telecoms as one uniform market.",
       "Do not imply high AI exposure means easy value capture.",
       "Do not skip the skills, trust and judgement story."
     ]
@@ -179,10 +179,10 @@ function patchLogo() {
   if (!mark) return;
   mark.setAttribute("aria-label", "PwC");
   mark.classList.add("logo-loaded");
+  const src = "./assets/pwc-logo.svg?v=20260619-9";
   const current = mark.querySelector("img");
-  const src = "./assets/pwc-logo-clean-small.png?v=20260619-8";
   if (current) {
-    if (!current.src.includes("pwc-logo-clean-small")) current.setAttribute("src", src);
+    if (!current.src.includes("pwc-logo.svg")) current.setAttribute("src", src);
     current.setAttribute("alt", "PwC");
   } else {
     mark.innerHTML = `<img src="${src}" alt="PwC" />`;
