@@ -1,25 +1,15 @@
 {
   "sources": [
     {
-      "id": "pwc-ai-core",
-      "label": "PwC Human Scale AI core sources",
-      "cadence": "monthly-review",
+      "id": "pwc-technology-hub",
+      "label": "PwC AI, data and tech hub",
+      "cadence": "weekly-review",
       "enabled": true,
+      "scope": "https://www.pwc.com/gx/en/issues/technology.html and child pages under /gx/en/issues/technology/",
+      "max_pages": 80,
+      "max_depth": 4,
       "urls": [
-        "https://www.pwc.com/gx/en/services/ai.html",
-        "https://www.pwc.com/gx/en/services/ai/ai-jobs-barometer.html",
-        "https://www.pwc.com/gx/en/issues/technology/ai-performance.html",
-        "https://www.pwc.com/gx/en/issues/c-suite-insights/ceo-survey.html"
-      ]
-    },
-    {
-      "id": "pwc-ai-sector-pilot",
-      "label": "PwC FS and TMT AI pilot sector cuts",
-      "cadence": "campaign-cycle",
-      "enabled": true,
-      "urls": [
-        "https://www.pwc.com/gx/en/issues/artificial-intelligence/job-barometer/2026/pwc-aijb-2026-financial-services-report.pdf",
-        "https://www.pwc.com/gx/en/issues/artificial-intelligence/job-barometer/2026/pwc-aijb-2026-technology-media-and-telecoms-report.pdf"
+        "https://www.pwc.com/gx/en/issues/technology.html"
       ]
     }
   ]

@@ -1,4 +1,4 @@
-name: Refresh PwC sources
+name: Refresh PwC technology sources
 
 on:
   workflow_dispatch:
@@ -20,16 +20,16 @@ jobs:
         with:
           node-version: 20
 
-      - name: Refresh approved PwC source candidates
+      - name: Crawl PwC AI data and tech hub
         run: node scripts/crawl-pwc.mjs
 
       - name: Commit source refresh outputs
         run: |
-          if [ -n "$(git status --porcelain crawl-report.json crawler/generated-assets.json)" ]; then
+          if [ -n "$(git status --porcelain crawl-report.json crawler/technology)" ]; then
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add crawl-report.json crawler/generated-assets.json
-            git commit -m "Refresh PwC source candidates"
+            git add crawl-report.json crawler/technology
+            git commit -m "Refresh PwC technology source candidates"
             git push
           else
             echo "No source refresh changes to commit."
