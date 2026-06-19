@@ -1,10 +1,24 @@
 .pwc-mark {
-  width: 152px;
-  height: 78px;
-  min-width: 152px;
+  width: 170px;
+  height: 94px;
+  min-width: 170px;
   background: url("./assets/pwc-logo-cropped.png") left center / contain no-repeat transparent !important;
   padding: 0 !important;
   align-items: center !important;
+  overflow: visible !important;
+  flex: 0 0 auto;
+}
+
+.pwc-mark.logo-loaded {
+  background: none !important;
+}
+
+.pwc-mark img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: left center;
 }
 
 .pwc-mark .pwc-text,
@@ -12,10 +26,15 @@
   display: none !important;
 }
 
+.brand-line,
+.brand-copy {
+  display: none !important;
+}
+
 @media (max-width: 760px) {
   .pwc-mark {
-    width: 118px;
-    min-width: 118px;
-    height: 62px;
+    width: 132px;
+    min-width: 132px;
+    height: 74px;
   }
 }
