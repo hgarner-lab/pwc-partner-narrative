@@ -1,0 +1,36 @@
+name: Refresh PwC sources
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 8 * * MON"
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Refresh approved PwC source candidates
+        run: node scripts/crawl-pwc.mjs
+
+      - name: Commit source refresh outputs
+        run: |
+          if [ -n "$(git status --porcelain crawl-report.json crawler/generated-assets.json)" ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add crawl-report.json crawler/generated-assets.json
+            git commit -m "Refresh PwC source candidates"
+            git push
+          else
+            echo "No source refresh changes to commit."
+          fi
