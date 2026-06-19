@@ -37,30 +37,8 @@
   </head>
   <body>
     <div id="app" class="app-shell"></div>
-    <script>
-      (function () {
-        const logoSrc = "./assets/pwc-logo-clean-small.png?v=20260619-12";
-        function applyLogo() {
-          const mark = document.querySelector(".pwc-mark");
-          if (!mark) return;
-          mark.setAttribute("aria-label", "PwC");
-          const img = mark.querySelector("img.pwc-real-logo");
-          if (img) {
-            if (!img.getAttribute("src") || !img.getAttribute("src").includes("pwc-logo-clean-small")) img.setAttribute("src", logoSrc);
-            return;
-          }
-          mark.innerHTML = '<img class="pwc-real-logo" src="' + logoSrc + '" alt="PwC" />';
-        }
-        window.__forcePwcLogo = applyLogo;
-        document.addEventListener("DOMContentLoaded", applyLogo);
-        const timer = window.setInterval(applyLogo, 100);
-        window.setTimeout(function () { window.clearInterval(timer); }, 10000);
-        new MutationObserver(applyLogo).observe(document.documentElement, { childList: true, subtree: true });
-      })();
-    </script>
-    <script type="module" src="./src/app.js?v=20260619-12"></script>
+    <script type="module" src="./src/app.js?v=20260619-13"></script>
     <script type="module" src="./src/kit-interactions-safe.js?v=20260619-3"></script>
     <script type="module" src="./src/source-lanes.js?v=20260619-6"></script>
-    <script type="module" src="./src/tdai-narratives.js?v=20260619-9"></script>
   </body>
 </html>
