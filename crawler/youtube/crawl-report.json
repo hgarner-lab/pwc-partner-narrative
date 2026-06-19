@@ -1,0 +1,14 @@
+{
+  "lastRunAt": "2026-06-19T16:16:07.914Z",
+  "status": "not_configured",
+  "channelCount": 2,
+  "fetchedVideoCount": 0,
+  "assetCount": 0,
+  "notes": [
+    "Set a repository secret named YOUTUBE_API_KEY to enable YouTube Data API ingestion.",
+    "This lane captures video metadata only and does not download video, audio or transcripts."
+  ],
+  "errors": [
+    "Missing YOUTUBE_API_KEY"
+  ]
+}
