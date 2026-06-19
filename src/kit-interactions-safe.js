@@ -1,11 +1,13 @@
+import { contentAssets } from "./data.js";
+
 const selectionKey = "pwc-partner-kit-selection";
 
 const outputGuidance = {
   "LinkedIn post starter": "Open with a recognisable market tension, add one approved proof point, add one partner observation, and end with a question worth answering.",
-  "Comment starter": "Do not say 'great post'. Add one useful angle, one practical implication, or one question that makes the issue feel live.",
+  "Comment starter": "Add one useful angle, one practical implication, or one question that makes the issue feel live. Avoid empty endorsement.",
   "Short video prompt": "Keep it to one tension, one proof point and one practical question. It should feel like a partner talking for 30 to 45 seconds, not reading a script.",
   "Client email starter": "Keep it short, specific and low-friction. Connect the proof to a client moment, then ask one easy question.",
-  "Event follow-up note": "Reference the conversation, use one proof point, and offer a practical next step rather than a broad follow-up meeting.",
+  "Event follow-up note": "Reference the conversation, use one proof point, and offer a practical next step rather than a broad meeting request.",
   "Sales talking point": "Use proof as a bridge into diagnosis. Avoid pitching; ask where the issue shows up in the client's world.",
   "Q&A prep": "Anticipate the sceptical question. Answer with one proof point, one guardrail and one safer phrase."
 };
@@ -49,6 +51,38 @@ function escapeHtml(value) {
     .replaceAll("'", "&#039;");
 }
 
+function formatDate(value) {
+  if (!value) return "Date tbc";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return value;
+  return new Intl.DateTimeFormat("en-GB", { day: "2-digit", month: "short", year: "numeric" }).format(date);
+}
+
+function assetByTitle(title) {
+  const normalised = text(title).toLowerCase();
+  return contentAssets.find((asset) => text(asset.title).toLowerCase() === normalised)
+    || contentAssets.find((asset) => normalised.includes(text(asset.title).toLowerCase()) || text(asset.title).toLowerCase().includes(normalised));
+}
+
+function dateLabelForAsset(asset) {
+  if (!asset) return "Date tbc";
+  if (asset.published_date) return formatDate(asset.published_date);
+  if (asset.last_seen_date) return `Seen ${formatDate(asset.last_seen_date)}`;
+  return "Date tbc";
+}
+
+function latestVisibleSourceDate() {
+  const visibleTitles = [...document.querySelectorAll(".proof-spotlight li strong")].map((node) => node.textContent);
+  const dates = visibleTitles
+    .map((title) => assetByTitle(title))
+    .map((asset) => asset?.published_date || asset?.last_seen_date)
+    .filter(Boolean)
+    .map((value) => new Date(value))
+    .filter((date) => !Number.isNaN(date.getTime()))
+    .sort((a, b) => b.getTime() - a.getTime());
+  return dates[0] ? formatDate(dates[0].toISOString()) : text(document.querySelector(".narrative-card.active .meta-row.soft span:last-child")?.textContent) || "Date tbc";
+}
+
 function proofLineFromPage() {
   return text(document.querySelector(".proof-card p")?.textContent || document.querySelector(".source-proof span")?.textContent || "Use the approved PwC source shown in this kit.");
 }
@@ -89,6 +123,57 @@ function draftFor(type, selection, proofLine, narrative) {
   return drafts[type] || drafts["LinkedIn post starter"];
 }
 
+function platformClass(type) {
+  if (type.includes("LinkedIn")) return "linkedin";
+  if (type.includes("Comment")) return "comment";
+  if (type.includes("email") || type.includes("Event")) return "email";
+  if (type.includes("video")) return "video";
+  if (type.includes("Sales")) return "talking";
+  if (type.includes("Q&A")) return "qa";
+  return "linkedin";
+}
+
+function platformCanvas(type, draft, selection) {
+  const platform = platformClass(type);
+  const body = `<pre>${escapeHtml(draft)}</pre>`;
+  if (platform === "email") {
+    return `
+      <div class="platform-canvas platform-email">
+        <div class="email-toolbar"><span></span><span></span><span></span></div>
+        <div class="email-meta"><strong>To</strong><span>Client / contact</span></div>
+        <div class="email-meta"><strong>Subject</strong><span>${escapeHtml(selection.moment)} - one PwC proof point</span></div>
+        ${body}
+      </div>`;
+  }
+  if (platform === "video") {
+    return `
+      <div class="platform-canvas platform-video">
+        <div class="video-frame"><div class="video-dot"></div><span>Partner video prompt</span></div>
+        ${body}
+      </div>`;
+  }
+  if (platform === "comment") {
+    return `
+      <div class="platform-canvas platform-comment">
+        <div class="comment-parent"><strong>PwC thought leadership post</strong><span>Respond with a useful point of view</span></div>
+        <div class="comment-bubble">${body}</div>
+      </div>`;
+  }
+  if (platform === "talking" || platform === "qa") {
+    return `
+      <div class="platform-canvas platform-notes">
+        <div class="notes-top"><strong>${escapeHtml(type)}</strong><span>${escapeHtml(selection.role)} / ${escapeHtml(selection.sector)}</span></div>
+        ${body}
+      </div>`;
+  }
+  return `
+    <div class="platform-canvas platform-linkedin">
+      <div class="linkedin-head"><div class="avatar">p</div><div><strong>PwC Partner</strong><span>${escapeHtml(selection.sector)} | ${escapeHtml(selection.style)}</span></div></div>
+      ${body}
+      <div class="linkedin-actions"><span>Like</span><span>Comment</span><span>Repost</span><span>Send</span></div>
+    </div>`;
+}
+
 function selectedOutputCardHtml(selection) {
   const outputType = outputLabels.includes(selection.outputType) ? selection.outputType : "LinkedIn post starter";
   const proofLine = proofLineFromPage();
@@ -102,7 +187,7 @@ function selectedOutputCardHtml(selection) {
         <span class="output-pill">Built for ${escapeHtml(selection.style || "Field note")}</span>
       </div>
       <div class="best-practice-note"><strong>Best-practice shape</strong><span>${escapeHtml(outputGuidance[outputType])}</span></div>
-      <pre>${escapeHtml(draft)}</pre>
+      ${platformCanvas(outputType, draft, selection)}
       <div class="source-proof"><strong>Source proof used</strong><span>${escapeHtml(proofLine)}</span></div>
       <p class="safer-note"><strong>Safer language:</strong> Use "may be worth exploring", "a useful question might be" or "it may be worth pressure-testing" rather than promising outcomes.</p>
       <p class="edit-note">Make one human edit before use.</p>
@@ -178,16 +263,30 @@ function upgradeKitPage() {
   stack.innerHTML = selectedOutputCardHtml({ ...selection, outputType });
 }
 
-function safeReplaceText(node, from, to) {
-  const current = node.textContent;
-  if (!current.includes(from)) return;
-  const next = current.replaceAll(from, to);
-  if (next !== current) node.textContent = next;
+function safeText(node, value) {
+  if (node && node.textContent !== value) node.textContent = value;
 }
 
 function polishLabels() {
-  document.querySelectorAll(".coverage-strip span, .proof-row aside span").forEach((node) => safeReplaceText(node, "Proof readiness", "Source strength"));
-  document.querySelectorAll("p").forEach((node) => safeReplaceText(node, "proof readiness", "source strength"));
+  safeText(document.querySelector(".edition-pill"), "The Leadership Agenda");
+  safeText(document.querySelector(".spine-panel .small-pill"), "Use with guardrails");
+  safeText(document.querySelector(".approval-pill"), "Approved source set");
+
+  const coverageItems = [...document.querySelectorAll(".coverage-strip div")];
+  const sourceDateItem = coverageItems.find((item) => item.querySelector("span")?.textContent.trim() === "Proof readiness" || item.querySelector("span")?.textContent.trim() === "Source strength" || item.querySelector("span")?.textContent.trim() === "Latest source");
+  if (sourceDateItem) {
+    safeText(sourceDateItem.querySelector("span"), "Latest source");
+    safeText(sourceDateItem.querySelector("strong"), latestVisibleSourceDate());
+  }
+
+  document.querySelectorAll(".proof-row").forEach((row) => {
+    const title = row.querySelector("h2")?.textContent;
+    const asset = assetByTitle(title);
+    const label = row.querySelector("aside span");
+    const value = row.querySelector("aside strong");
+    safeText(label, asset?.published_date ? "Published" : "Last seen");
+    safeText(value, dateLabelForAsset(asset));
+  });
 }
 
 function injectStyles() {
@@ -195,11 +294,34 @@ function injectStyles() {
   const style = document.createElement("style");
   style.id = "kit-interactions-style";
   style.textContent = `
+    .edition-pill { border-color: var(--black) !important; background: var(--black) !important; color: #fff !important; min-height: 42px; padding: 0 18px; letter-spacing: .02em; }
     .selected-output-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
     .output-pill { display: inline-flex; min-height: 30px; align-items: center; border: 1px solid var(--line); border-radius: 999px; padding: 0 10px; color: var(--muted); font-size: .78rem; font-weight: 800; white-space: nowrap; }
     .best-practice-note { border: 1px solid rgba(255, 79, 31, .26); border-radius: 18px; background: #fff3ea; padding: 13px 14px; margin: 0 0 14px; }
     .best-practice-note strong, .best-practice-note span { display: block; }
     .best-practice-note span { margin-top: 4px; color: var(--muted); line-height: 1.42; }
+    .platform-canvas { border: 1px solid var(--line); border-radius: 24px; background: #fff; margin: 14px 0; overflow: hidden; box-shadow: 0 18px 50px rgba(23,18,15,.08); }
+    .platform-canvas pre { margin: 0; border: 0; border-radius: 0; background: transparent; color: #241d18; padding: 18px; font-family: Arial, Helvetica, sans-serif; white-space: pre-wrap; line-height: 1.5; }
+    .linkedin-head, .notes-top { display: flex; align-items: center; gap: 12px; padding: 16px 18px 0; }
+    .linkedin-head strong, .linkedin-head span, .notes-top strong, .notes-top span { display: block; }
+    .linkedin-head span, .notes-top span { color: var(--muted); font-size: .84rem; margin-top: 3px; }
+    .avatar { width: 42px; height: 42px; border-radius: 50%; background: var(--black); color: #fff; display: grid; place-items: center; font-family: Georgia, serif; font-size: 28px; font-style: italic; font-weight: 800; }
+    .linkedin-actions { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid var(--line); color: var(--muted); font-size: .84rem; font-weight: 800; }
+    .linkedin-actions span { display: grid; place-items: center; min-height: 42px; }
+    .email-toolbar { display: flex; gap: 7px; padding: 14px 16px; background: #f4eee6; border-bottom: 1px solid var(--line); }
+    .email-toolbar span { width: 11px; height: 11px; border-radius: 50%; background: var(--orange); }
+    .email-toolbar span:nth-child(2) { background: var(--amber); }
+    .email-toolbar span:nth-child(3) { background: var(--black); }
+    .email-meta { display: grid; grid-template-columns: 80px minmax(0,1fr); gap: 10px; padding: 10px 18px; border-bottom: 1px solid var(--line); }
+    .email-meta strong { color: var(--muted); }
+    .video-frame { min-height: 230px; display: grid; place-items: center; background: radial-gradient(circle at 70% 20%, rgba(255,79,31,.24), transparent 30%), var(--black); color: #fff; }
+    .video-frame span { font-size: 1.1rem; font-weight: 800; }
+    .video-dot { width: 74px; height: 74px; border-radius: 50%; background: var(--orange); margin-bottom: 10px; }
+    .comment-parent { margin: 16px 16px 0; border-radius: 18px; background: #f6f1e9; padding: 14px; }
+    .comment-parent strong, .comment-parent span { display: block; }
+    .comment-parent span { color: var(--muted); margin-top: 4px; }
+    .comment-bubble { margin: 14px 16px 16px; border-left: 4px solid var(--orange); background: #fffaf4; border-radius: 18px; }
+    .platform-notes { background: linear-gradient(135deg, #fff, #fff7ee); }
     .interaction-note { margin: 12px 0 0; color: var(--green); font-weight: 900; }
     .kit-actions button.copied, .primary-button.copied, .secondary-button.copied { background: var(--green) !important; border-color: var(--green) !important; color: #fff !important; }
   `;
