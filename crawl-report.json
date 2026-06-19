@@ -1,13 +1,15 @@
 {
-  "lastRunAt": "2026-06-19T00:00:00.000Z",
+  "lastRunAt": "2026-06-19T14:36:28.472Z",
   "seedUrlCount": 6,
   "discoveredUrlCount": 0,
-  "fetchedPageCount": 0,
-  "assetCount": 8,
-  "newCandidateCount": 0,
+  "fetchedPageCount": 6,
+  "assetCount": 6,
+  "newCandidateCount": 6,
   "notes": [
-    "Partner Narrative Kits seed uses approved public PwC pages and reports.",
-    "No public profile scraping or unapproved social monitoring is configured."
+    "Source refresh fetches approved public PwC URLs from crawler/sources.json.",
+    "Generated assets are candidates for marketing review, not auto-approved partner kit sources.",
+    "No public profile scraping or unapproved social monitoring is configured.",
+    "PDF URLs are checked for availability but require a PDF text extraction step before claims can be used."
   ],
   "errors": []
 }
