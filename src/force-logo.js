@@ -1,49 +1,49 @@
-const logoSvg = `
-  <svg class="pwc-logo-inline" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 112" role="img" aria-label="PwC">
-    <rect width="220" height="112" fill="none"></rect>
-    <g transform="translate(6 12)">
-      <text x="0" y="82" fill="#000000" font-family="Georgia, 'Times New Roman', serif" font-size="82" font-weight="800" font-style="italic" letter-spacing="-9">pwc</text>
-      <polygon points="112,7 156,7 144,25 100,25" fill="#ff4f1f"></polygon>
-      <polygon points="156,0 210,0 198,18 144,18" fill="#ff4f1f"></polygon>
-    </g>
-  </svg>
-`;
-
 function injectLogoStyles() {
   if (document.querySelector("#force-logo-style")) return;
   const style = document.createElement("style");
   style.id = "force-logo-style";
   style.textContent = `
-    .brand { gap: 0 !important; }
-    .brand-line, .brand-copy { display: none !important; }
+    .brand {
+      gap: 0 !important;
+      align-items: center !important;
+    }
+    .brand-line,
+    .brand-copy {
+      display: none !important;
+    }
     .pwc-mark {
       display: block !important;
-      width: 172px !important;
-      height: 88px !important;
-      min-width: 172px !important;
+      width: 156px !important;
+      height: 84px !important;
+      min-width: 156px !important;
       padding: 0 !important;
       margin: 0 !important;
       overflow: visible !important;
       background: transparent !important;
-      flex: 0 0 172px !important;
+      flex: 0 0 156px !important;
     }
     .pwc-mark .pwc-text,
     .pwc-mark .block,
-    .pwc-mark img {
+    .pwc-mark svg:not(.pwc-real-logo-svg) {
       display: none !important;
     }
-    .pwc-logo-inline {
+    .pwc-real-logo {
       display: block !important;
-      width: 172px !important;
-      height: 88px !important;
-      overflow: visible !important;
+      width: 156px !important;
+      height: 84px !important;
+      object-fit: contain !important;
+      object-position: left center !important;
     }
     @media (max-width: 760px) {
-      .pwc-mark, .pwc-logo-inline {
-        width: 134px !important;
-        min-width: 134px !important;
-        height: 70px !important;
-        flex-basis: 134px !important;
+      .pwc-mark {
+        width: 126px !important;
+        min-width: 126px !important;
+        height: 68px !important;
+        flex-basis: 126px !important;
+      }
+      .pwc-real-logo {
+        width: 126px !important;
+        height: 68px !important;
       }
     }
   `;
@@ -54,11 +54,15 @@ function forceLogo() {
   injectLogoStyles();
   const mark = document.querySelector(".pwc-mark");
   if (!mark) return;
-  if (!mark.querySelector(".pwc-logo-inline")) {
-    mark.setAttribute("aria-label", "PwC");
-    mark.classList.add("logo-loaded");
-    mark.innerHTML = logoSvg;
+  mark.setAttribute("aria-label", "PwC");
+  mark.classList.add("logo-loaded");
+  const src = "./assets/pwc-logo-clean-small.png?v=20260619-11";
+  const current = mark.querySelector("img.pwc-real-logo");
+  if (current) {
+    if (!current.getAttribute("src")?.includes("pwc-logo-clean-small")) current.setAttribute("src", src);
+    return;
   }
+  mark.innerHTML = `<img class="pwc-real-logo" src="${src}" alt="PwC" />`;
 }
 
 let scheduled = false;
