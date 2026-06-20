@@ -27,12 +27,89 @@ function installBrandLogoStyles() {
       object-position: left center !important;
     }
 
+    .top-actions {
+      align-items: stretch !important;
+      gap: 18px !important;
+    }
+
+    .approval-pill,
+    .edition-pill,
+    .small-pill,
+    .non-action-badge {
+      min-height: 0 !important;
+      border: 0 !important;
+      border-radius: 0 !important;
+      background: transparent !important;
+      color: var(--ink) !important;
+      box-shadow: none !important;
+      padding: 3px 0 3px 12px !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: flex-start !important;
+      gap: 8px !important;
+      font-size: 0.78rem !important;
+      font-weight: 900 !important;
+      letter-spacing: 0.08em !important;
+      line-height: 1.2 !important;
+      text-transform: uppercase !important;
+      text-decoration: none !important;
+      white-space: nowrap !important;
+      pointer-events: none;
+      cursor: default;
+      position: relative;
+    }
+
+    .approval-pill::before,
+    .edition-pill::before,
+    .small-pill::before,
+    .non-action-badge::before {
+      content: "";
+      width: 4px;
+      min-width: 4px;
+      height: 22px;
+      background: var(--orange);
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    .approval-pill::before {
+      background: var(--green);
+    }
+
+    .edition-pill::before {
+      background: var(--black);
+    }
+
+    .approval-pill i {
+      display: none !important;
+    }
+
+    .spine-panel .small-pill.non-action-note,
+    .small-pill.non-action-note {
+      color: var(--muted) !important;
+      letter-spacing: 0.04em !important;
+      text-transform: none !important;
+    }
+
     @media (max-width: 760px) {
       .brand-text-mark,
       .brand-text-mark img {
         width: 92px !important;
         min-width: 92px !important;
         height: 44px !important;
+      }
+
+      .top-actions {
+        gap: 12px !important;
+      }
+
+      .approval-pill,
+      .edition-pill,
+      .small-pill,
+      .non-action-badge {
+        white-space: normal !important;
       }
     }
   `;
