@@ -1,9 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 112" role="img" aria-labelledby="title">
-  <title id="title">PwC</title>
-  <rect width="220" height="112" fill="none"/>
-  <g transform="translate(6 12)">
-    <text x="0" y="82" fill="#000000" font-family="Georgia, 'Times New Roman', serif" font-size="82" font-weight="800" font-style="italic" letter-spacing="-9">pwc</text>
-    <polygon points="112,7 156,7 144,25 100,25" fill="#ff4f1f"/>
-    <polygon points="156,0 210,0 198,18 144,18" fill="#ff4f1f"/>
-  </g>
-</svg>

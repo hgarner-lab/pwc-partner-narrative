@@ -1,4 +1,4 @@
-import { clientConfig, contentAssets, taxonomy } from "./data.js";
+import { contentAssets, taxonomy } from "./data.js";
 
 const app = document.querySelector("#app");
 
@@ -227,11 +227,7 @@ function narrativeCard(narrative) {
 }
 
 function brandMark() {
-  return `
-    <div class="pwc-mark" aria-label="PwC">
-      <img class="pwc-real-logo" src="./assets/pwc-logo-clean-small.png?v=20260619-13" alt="PwC" />
-    </div>
-  `;
+  return `<div class="brand-text-mark" aria-label="PwC">PwC</div>`;
 }
 
 function renderShell(content) {
