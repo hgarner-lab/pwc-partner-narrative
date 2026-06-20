@@ -110,6 +110,67 @@ function installBrandLogoStyles() {
       background: var(--orange) !important;
     }
 
+    .spine-body {
+      padding: 32px !important;
+    }
+
+    .brief-grid,
+    .safety-grid,
+    .coverage-strip {
+      gap: 20px !important;
+      margin-top: 24px !important;
+    }
+
+    .brief-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    }
+
+    .brief-grid article:nth-child(3) {
+      grid-column: 1 / -1 !important;
+    }
+
+    .safety-grid {
+      grid-template-columns: 1fr !important;
+    }
+
+    .brief-grid article,
+    .proof-spotlight,
+    .guardrail-spotlight,
+    .coverage-strip div,
+    .source-proof {
+      padding: 24px 26px !important;
+      border-radius: 26px !important;
+    }
+
+    .brief-grid article p {
+      font-size: 1.02rem !important;
+      line-height: 1.58 !important;
+    }
+
+    .proof-spotlight ul,
+    .guardrail-spotlight ul {
+      margin-top: 18px !important;
+      line-height: 1.62 !important;
+    }
+
+    .proof-spotlight li,
+    .guardrail-spotlight li {
+      margin-bottom: 14px !important;
+    }
+
+    .proof-spotlight h3,
+    .guardrail-spotlight h3 {
+      font-size: 1.45rem !important;
+      line-height: 1.08 !important;
+    }
+
+    @media (min-width: 1480px) {
+      .workbench {
+        grid-template-columns: minmax(280px, 0.78fr) minmax(760px, 1.62fr) minmax(320px, 0.82fr) !important;
+        gap: 24px !important;
+      }
+    }
+
     @media (max-width: 760px) {
       .brand-text-mark,
       .brand-text-mark img {
@@ -127,6 +188,31 @@ function installBrandLogoStyles() {
       .small-pill,
       .non-action-badge {
         white-space: normal !important;
+      }
+
+      .spine-body {
+        padding: 20px !important;
+      }
+
+      .brief-grid,
+      .safety-grid,
+      .coverage-strip {
+        grid-template-columns: 1fr !important;
+        gap: 14px !important;
+        margin-top: 16px !important;
+      }
+
+      .brief-grid article:nth-child(3) {
+        grid-column: auto !important;
+      }
+
+      .brief-grid article,
+      .proof-spotlight,
+      .guardrail-spotlight,
+      .coverage-strip div,
+      .source-proof {
+        padding: 20px !important;
+        border-radius: 22px !important;
       }
     }
   `;
