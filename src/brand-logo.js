@@ -133,6 +133,19 @@ function installBrandLogoStyles() {
       grid-template-columns: 1fr !important;
     }
 
+    .coverage-strip {
+      grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    }
+
+    .coverage-strip div {
+      min-height: 0 !important;
+    }
+
+    .coverage-strip strong {
+      font-size: 1.12rem !important;
+      line-height: 1.42 !important;
+    }
+
     .brief-grid article,
     .proof-spotlight,
     .guardrail-spotlight,
