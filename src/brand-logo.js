@@ -1,7 +1,7 @@
 const logoSrc = "./assets/pwc-logo-mark.webp?v=20260620-1";
 
 function installBrandLogoStyles() {
-  if (document.querySelector("#brand-logo-style")) return;
+  document.querySelector("#brand-logo-style")?.remove();
   const style = document.createElement("style");
   style.id = "brand-logo-style";
   style.textContent = `
@@ -42,7 +42,7 @@ function installBrandLogoStyles() {
       background: transparent !important;
       color: var(--ink) !important;
       box-shadow: none !important;
-      padding: 3px 0 3px 12px !important;
+      padding: 3px 0 3px 18px !important;
       display: inline-flex !important;
       align-items: center !important;
       justify-content: flex-start !important;
@@ -56,7 +56,8 @@ function installBrandLogoStyles() {
       white-space: nowrap !important;
       pointer-events: none;
       cursor: default;
-      position: relative;
+      position: relative !important;
+      box-sizing: border-box !important;
     }
 
     .approval-pill::before,
@@ -64,22 +65,23 @@ function installBrandLogoStyles() {
     .small-pill::before,
     .non-action-badge::before {
       content: "";
-      width: 4px;
-      min-width: 4px;
-      height: 22px;
+      width: 4px !important;
+      min-width: 4px !important;
+      height: 22px !important;
       background: var(--orange);
-      position: absolute;
-      left: 0;
-      top: 50%;
-      transform: translateY(-50%);
+      position: absolute !important;
+      left: 0 !important;
+      top: 50% !important;
+      transform: translateY(-50%) !important;
+      margin: 0 !important;
     }
 
     .approval-pill::before {
-      background: var(--green);
+      background: var(--green) !important;
     }
 
     .edition-pill::before {
-      background: var(--black);
+      background: var(--black) !important;
     }
 
     .approval-pill i {
@@ -91,6 +93,21 @@ function installBrandLogoStyles() {
       color: var(--muted) !important;
       letter-spacing: 0.04em !important;
       text-transform: none !important;
+      padding-left: 24px !important;
+      position: relative !important;
+    }
+
+    .spine-panel .small-pill.non-action-note::before,
+    .small-pill.non-action-note::before {
+      width: 5px !important;
+      min-width: 5px !important;
+      height: 18px !important;
+      left: 2px !important;
+      top: 50% !important;
+      position: absolute !important;
+      transform: translateY(-50%) !important;
+      margin: 0 !important;
+      background: var(--orange) !important;
     }
 
     @media (max-width: 760px) {
@@ -137,6 +154,9 @@ function scheduleBrandLogo() {
 }
 
 applyBrandLogo();
+setTimeout(applyBrandLogo, 250);
+setTimeout(applyBrandLogo, 1000);
+setTimeout(applyBrandLogo, 2500);
 new MutationObserver(scheduleBrandLogo).observe(document.body, { childList: true, subtree: true });
 
 document.addEventListener("click", () => setTimeout(applyBrandLogo, 0), true);
