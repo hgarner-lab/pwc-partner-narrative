@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="PwC">
-  <rect width="64" height="64" rx="12" fill="#050505"/>
-  <polygon points="22,29 40,29 35,38 17,38" fill="#ff4f1f"/>
-  <polygon points="39,23 58,23 53,32 34,32" fill="#ff4f1f"/>
+  <rect width="64" height="64" fill="none"/>
+  <polygon points="18,30 38,30 32,40 12,40" fill="#ff4f1f"/>
+  <polygon points="37,22 58,22 52,32 31,32" fill="#ff4f1f"/>
 </svg>
