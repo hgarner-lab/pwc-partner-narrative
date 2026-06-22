@@ -1,24 +1,114 @@
 {
-  "lastRunAt": "2026-06-19T15:04:11.356Z",
+  "lastRunAt": "2026-06-22T19:59:08.898Z",
   "seedUrlCount": 1,
-  "discoveredUrlCount": 0,
-  "fetchedPageCount": 0,
+  "discoveredUrlCount": 56,
+  "fetchedPageCount": 40,
   "pdfCount": 0,
-  "assetCount": 0,
-  "newCandidateCount": 0,
+  "assetCount": 40,
+  "newCandidateCount": 40,
   "maxDepth": 4,
   "maxPages": 80,
+  "fetchMode": "browser",
+  "fetchModes": {
+    "browser": 55
+  },
   "notes": [
     "Crawler is scoped to the PwC AI, data and tech hub and child URLs under /gx/en/issues/technology/.",
+    "Workflow can run with FETCH_MODE=browser to render pages with Playwright when plain Node fetch is blocked.",
     "Navigation, footer, search, social, video-control and legal boilerplate are stripped before proof extraction.",
     "Generated assets are candidates for marketing review, not auto-approved partner kit sources.",
     "PDFs are recorded and checked for availability, but PDF text extraction is pending."
   ],
   "errors": [
     {
-      "url": "https://www.pwc.com/gx/en/issues/technology.html",
-      "status": 403,
-      "message": "Forbidden"
+      "url": "https://www.pwc.com/gx/en/issues/technology/how-can-organisations-use-ai-to-address-their-skills-gaps",
+      "status": 404,
+      "message": "",
+      "fetchMode": "browser"
+    },
+    {
+      "url": "https://www.pwc.com/gx/en/issues/technology/how-will-ai-change-the-way-my-children-learn",
+      "status": 404,
+      "message": "",
+      "fetchMode": "browser"
+    },
+    {
+      "url": "https://www.pwc.com/gx/en/issues/technology/how-do-you-transform-with-ai",
+      "status": 404,
+      "message": "",
+      "fetchMode": "browser"
+    },
+    {
+      "url": "https://www.pwc.com/gx/en/issues/technology/how-can-ai-help-me-to-experiment-further",
+      "status": 404,
+      "message": "",
+      "fetchMode": "browser"
+    },
+    {
+      "url": "https://www.pwc.com/gx/en/issues/technology/how-can-ai-improve-roi",
+      "status": 404,
+      "message": "",
+      "fetchMode": "browser"
+    },
+    {
+      "url": "https://www.pwc.com/gx/en/issues/technology/how-can-small-business-challenge-big-enterprise-with-ai",
+      "status": 404,
+      "message": "",
+      "fetchMode": "browser"
+    },
+    {
+      "url": "https://www.pwc.com/gx/en/issues/technology/how-can-you-control-agents-so-they-dont-go-rogue",
+      "status": 404,
+      "message": "",
+      "fetchMode": "browser"
+    },
+    {
+      "url": "https://www.pwc.com/gx/en/issues/technology/how-is-ai-accelerating-cross-industry-ecosystems4s",
+      "status": 404,
+      "message": "",
+      "fetchMode": "browser"
+    },
+    {
+      "url": "https://www.pwc.com/gx/en/issues/technology/as-our-use-of-ai-increases-how-does-energy-keep-up-with-the-pace",
+      "status": 404,
+      "message": "",
+      "fetchMode": "browser"
+    },
+    {
+      "url": "https://www.pwc.com/gx/en/issues/technology/will-the-ai-bubble-burst",
+      "status": 404,
+      "message": "",
+      "fetchMode": "browser"
+    },
+    {
+      "url": "https://www.pwc.com/gx/en/issues/technology/how-can-ai-help-me-turn-big-ideas-into-reality-faster",
+      "status": 404,
+      "message": "",
+      "fetchMode": "browser"
+    },
+    {
+      "url": "https://www.pwc.com/gx/en/issues/technology/how-will-my-role-as-a-leader-evolve-in-line-with-ai",
+      "status": 404,
+      "message": "",
+      "fetchMode": "browser"
+    },
+    {
+      "url": "https://www.pwc.com/gx/en/issues/technology/the-future-of-work-video",
+      "status": 404,
+      "message": "",
+      "fetchMode": "browser"
+    },
+    {
+      "url": "https://www.pwc.com/gx/en/issues/technology/could-net-zero-ai-become-reality",
+      "status": 404,
+      "message": "",
+      "fetchMode": "browser"
+    },
+    {
+      "url": "https://www.pwc.com/gx/en/issues/technology/agentic-ai-video",
+      "status": 404,
+      "message": "",
+      "fetchMode": "browser"
     }
   ]
 }
