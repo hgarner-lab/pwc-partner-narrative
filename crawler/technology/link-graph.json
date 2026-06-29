@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-22T19:59:08.898Z",
+  "generatedAt": "2026-06-29T17:49:16.707Z",
   "nodes": [
     {
       "id": "pwc-tech-a98ff398b9",
@@ -1313,6 +1313,12 @@
       "from": "https://www.pwc.com/gx/en/issues/technology/ai-performance.html",
       "to": "https://www.pwc.com/gx/en/contacts/k/kazi-islam.html",
       "label": "Kazi Islam",
+      "relation": "related_offscope"
+    },
+    {
+      "from": "https://www.pwc.com/gx/en/issues/technology/ai-performance.html",
+      "to": "https://www.pwc.com/us/en/contacts/d/dan-priest.html",
+      "label": "Dan Priest",
       "relation": "related_offscope"
     },
     {
@@ -12615,14 +12621,14 @@
     },
     {
       "from": "https://www.pwc.com/gx/en/issues/technology/next-tech-agenda/think-like-an-ai-revolutionary.html",
-      "to": "https://www.pwc.com.au/value-in-motion/harnessing-the-value-in-apac.html",
-      "label": "Article 27/05/25 Value in Motion: Harnessing value in Asia Pacific Huge value pools are emerging in our region – how do we capture them?",
+      "to": "https://www.pwc.com.au/value-in-motion.html",
+      "label": "19/08/25 Value in Motion Australian perspectives Find out where the value is moving for Australia’s industries, and how to seize this moment of opportunity.",
       "relation": "related_offscope"
     },
     {
       "from": "https://www.pwc.com/gx/en/issues/technology/next-tech-agenda/think-like-an-ai-revolutionary.html",
-      "to": "https://www.pwc.com.au/value-in-motion/3-bold-moves-australias-ceos-can-make-to-capture-new-value.html",
-      "label": "Article 04/12/25 3 bold moves Australia’s CEOs can make to capture new value Reinvention pressure requires decisive leadership. Here’s how bold leaders can unlock new value.",
+      "to": "https://www.pwc.com.au/value-in-motion/harnessing-the-value-in-apac.html",
+      "label": "Article 27/05/25 Value in Motion: Harnessing value in Asia Pacific Huge value pools are emerging in our region – how do we capture them?",
       "relation": "related_offscope"
     },
     {
